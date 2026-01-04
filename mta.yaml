@@ -21,6 +21,8 @@ modules:
     memory: 512M
   build-parameters:
     builder: npm-ci
+
+
 - name: schoolmanagement-db-deployer
   type: hdb
   path: gen/db
@@ -30,6 +32,8 @@ modules:
     buildpack: nodejs_buildpack
     disk-quota: 256M
     memory: 256M
+
+
 - name: schoolmanagement-app-deployer
   type: com.sap.application.content
   path: gen
@@ -48,6 +52,8 @@ modules:
       - school-student-management.zip
       name: schoolmanagementschoolstudentmanagement
       target-path: app/
+
+
 - name: schoolmanagementschoolstudentmanagement
   type: html5
   path: app/school-student-management
@@ -58,13 +64,15 @@ modules:
     - npm ci
     - npm run build
     supported-platforms: []
+
+
 - name: schoolmanagement-destinations
   type: com.sap.application.content
   requires:
   - name: schoolmanagement-auth
     parameters:
       service-key:
-        name: schoolmanagement-auth-key
+        name: schoolmanagement-auth-key       
   - name: schoolmanagement-html5-repo-host
     parameters:
       service-key:
@@ -89,6 +97,8 @@ modules:
         existing_destinations_policy: update
   build-parameters:
     no-source: true
+
+
 - name: schoolmanagement
   type: approuter.nodejs
   path: app/router
@@ -105,6 +115,8 @@ modules:
     disk-quota: 256M
     keep-existing-routes: true
     memory: 128M
+
+
 - name: launchpad
   type: com.sap.application.content
   path: launchpad
@@ -118,6 +130,12 @@ modules:
         name: content-deploy-key
   # - name: uaa_schoolmanagement
   - name: schoolmanagement-auth
+
+
+
+
+
+
 resources:
 - name: schoolmanagement-auth
   type: org.cloudfoundry.managed-service
@@ -133,11 +151,15 @@ resources:
     service-plan: application
   requires:
   - name: app-api
+
+
 - name: schoolmanagement-db
   type: com.sap.xs.hdi-container
   parameters:
     service: hana
     service-plan: hdi-shared
+
+
 - name: schoolmanagement-destination
   type: org.cloudfoundry.managed-service
   parameters:
@@ -158,6 +180,8 @@ resources:
     service-plan: lite
   requires:
   - name: app-api
+
+
 - name: schoolmanagement-html5-repo-host
   type: org.cloudfoundry.managed-service
   parameters:
@@ -168,11 +192,18 @@ resources:
   parameters:
     service: html5-apps-repo
     service-plan: app-runtime
+
+
 - name: portal_resources_schoolmanagement
-  type: org.cloudfoundry.managed-service
+  # type: org.cloudfoundry.managed-service
+  type: org.cloudfoundry.existing-service
   parameters:
-    service: portal
-    service-plan: standard
+    # service: portal
+    # service-plan: standard
+    service-name: QA-Workzone
+
+
+    
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
