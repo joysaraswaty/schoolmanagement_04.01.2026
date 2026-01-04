@@ -174,7 +174,8 @@ resources:
             Name: srv-api
             ProxyType: Internet
             Type: HTTP
-            URL: https://~{app-api/app-uri}
+            # URL: https://~{app-api/app-uri}
+            URL: ~{srv-api/srv-url}
           existing_destinations_policy: update
     service: destination
     service-plan: lite
