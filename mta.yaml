@@ -169,7 +169,8 @@ resources:
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
     requires:
-      - name: srv-api
+      # - name: srv-api
+      - name: app-api
     #     group: destinations
     #     properties:
     #       name: srv-api # must be used in xs-app.json as well
