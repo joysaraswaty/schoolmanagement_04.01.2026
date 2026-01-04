@@ -18,6 +18,8 @@ modules:
     parameters:
       instances: 1
       buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 512M
     build-parameters:
       builder: npm-ci
     provides:
@@ -33,6 +35,8 @@ modules:
     type: hdb
     path: gen/db
     parameters:
+      memory: 256M
+      disk-quota: 256M
       buildpack: nodejs_buildpack
     requires:
       - name: schoolmanagement-db
@@ -105,7 +109,7 @@ modules:
     parameters:
       keep-existing-routes: true
       disk-quota: 256M
-      memory: 256M
+      memory: 128M
     requires:
       - name: srv-api
         group: destinations
