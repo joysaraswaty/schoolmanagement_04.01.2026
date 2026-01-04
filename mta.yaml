@@ -103,6 +103,7 @@ modules:
               ServiceInstanceName: schoolmanagement-auth
               ServiceKeyName: schoolmanagement-auth-key
               sap.cloud.service: schoolmanagement.service
+
   - name: schoolmanagement
     type: approuter.nodejs
     path: app/router
@@ -111,12 +112,12 @@ modules:
       disk-quota: 256M
       memory: 128M
     requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
+      # - name: srv-api
+      #   group: destinations
+      #   properties:
+      #     name: srv-api # must be used in xs-app.json as well
+      #     url: ~{srv-url}
+      #     forwardAuthToken: true
       - name: schoolmanagement-auth
       - name: schoolmanagement-destination
       - name: schoolmanagement-html5-runtime
@@ -146,6 +147,7 @@ resources:
     parameters:
       service: hana
       service-plan: hdi-shared
+
   - name: schoolmanagement-destination
     type: org.cloudfoundry.managed-service
     parameters:
@@ -158,19 +160,21 @@ resources:
             existing_destinations_policy: update
             destinations:
               - Name: srv-api
-                URL: ~{srv-api/srv-url}
-                Authentication: NoAuthentication
+                # URL: ~{srv-api/srv-url}
+                URL: https://~{app-api/app-uri}
+                # Authentication: NoAuthentication
+                Authentication: OAuth2UserTokenExchange
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
+    # requires:
+    #   - name: srv-api
+    #     group: destinations
+    #     properties:
+    #       name: srv-api # must be used in xs-app.json as well
+    #       url: ~{srv-url}
+    #       forwardAuthToken: true
 
   - name: schoolmanagement-html5-repo-host
     type: org.cloudfoundry.managed-service
