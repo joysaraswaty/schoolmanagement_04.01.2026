@@ -180,7 +180,8 @@ resources:
     service: destination
     service-plan: lite
   requires:
-  - name: app-api
+  # - name: app-api
+  - name: srv-api          # ✅ MUST MATCH URL reference
 
 
 - name: schoolmanagement-html5-repo-host
