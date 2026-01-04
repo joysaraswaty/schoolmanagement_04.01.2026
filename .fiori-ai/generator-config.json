@@ -1,0 +1,32 @@
+{
+    "version": "0.2",
+    "floorplan": "FE_LROP",
+    "project": {
+        "name": "school-student-management",
+        "targetFolder": "/home/user/projects/schoolmanagement",
+        "title": "School Student Management",
+        "description": "Manage schools and their students efficiently",
+        "ui5Version": "1.136.0",
+        "localUI5Version": "1.82.2",
+        "sapux": true
+    },
+    "service": {
+        "servicePath": "/service/schoolmanagement/",
+        "capService": {
+            "projectPath": "/home/user/projects/schoolmanagement",
+            "serviceName": "schoolmanagementSrv",
+            "serviceCdsPath": "srv/service"
+        }
+    },
+    "entityConfig": {
+        "mainEntity": {
+            "entityName": "School"
+        },
+        "generateLROPAnnotations": true
+    },
+    "projectTemplateType": "LIST_REPORT_OBJECT_PAGE",
+    "telemetryData": {
+        "generationSourceName": "AI Headless",
+        "generationSourceVersion": "1.20.0"
+    }
+}
