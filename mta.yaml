@@ -116,7 +116,8 @@ modules:
         config:
           content-endpoint: developer
         name: content-deploy-key
-  - name: uaa_schoolmanagement
+  # - name: uaa_schoolmanagement
+  - name: schoolmanagement-auth
 resources:
 - name: schoolmanagement-auth
   type: org.cloudfoundry.managed-service
