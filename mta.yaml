@@ -90,12 +90,12 @@ modules:
         - Name: schoolmanagement-html5-repository
           ServiceInstanceName: schoolmanagement-html5-repo-host
           ServiceKeyName: schoolmanagement-html5-repo-host-key
-          sap.cloud.service: schoolmanagement.service
+          # sap.cloud.service: schoolmanagement.service
         - Authentication: OAuth2UserTokenExchange
           Name: schoolmanagement-auth
           ServiceInstanceName: schoolmanagement-auth
           ServiceKeyName: schoolmanagement-auth-key
-          sap.cloud.service: schoolmanagement.service
+          # sap.cloud.service: schoolmanagement.service
         existing_destinations_policy: update
   build-parameters:
     no-source: true
