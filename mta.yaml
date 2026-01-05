@@ -3,6 +3,7 @@ ID: schoolmanagement
 description: A simple CAP project.
 version: 1.0.0
 modules:
+
 - name: schoolmanagement-srv
   type: nodejs
   path: gen/srv
@@ -10,6 +11,7 @@ modules:
   - name: schoolmanagement-auth
   - name: schoolmanagement-db
   - name: schoolmanagement-destination
+  - name: schoolmanagement-metadata
   provides:
   - name: srv-api
     properties:
@@ -133,24 +135,32 @@ modules:
 
 
 
-
-
-
 resources:
+
+- name: schoolmanagement-metadata
+  type: org.cloudfoundry.user-provided-service
+  parameters:
+    service: metadata
+    config:
+      default-domain: ${default-domain}
+
+
+
 - name: schoolmanagement-auth
   type: org.cloudfoundry.managed-service
   parameters:
     config:
       oauth2-configuration:
         redirect-uris:
-        - https://*~{app-api/app-uri}/**
+        # - https://*~{app-api/app-uri}/**
+        - https://*.${default-domain}/**
       tenant-mode: dedicated
       xsappname: schoolmanagement-${org}-${space}
     path: ./xs-security.json
     service: xsuaa
     service-plan: application
-  requires:
-  - name: app-api
+  # requires:
+  # - name: app-api
 
 
 - name: schoolmanagement-db
@@ -176,6 +186,7 @@ resources:
             Type: HTTP
             # URL: https://~{app-api/app-uri}
             URL: ~{srv-api/srv-url}
+            sap.cloud.service: schoolmanagement.service
           existing_destinations_policy: update
     service: destination
     service-plan: lite
