@@ -101,23 +101,6 @@ modules:
     no-source: true
 
 
-- name: schoolmanagement
-  type: approuter.nodejs
-  path: app/router
-  requires:
-  - name: schoolmanagement-auth
-  - name: schoolmanagement-destination
-  - name: schoolmanagement-html5-runtime
-  provides:
-  - name: app-api
-    properties:
-      app-protocol: ${protocol}
-      app-uri: ${default-uri}
-  parameters:
-    disk-quota: 256M
-    keep-existing-routes: true
-    memory: 128M
-
 
 - name: launchpad
   type: com.sap.application.content
