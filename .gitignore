@@ -34,6 +34,7 @@ mta_archives/
 @cds-models
 
 # LCAP
-build/ui-deployer/
+# build/ui-deployer/
+build/ui-deployer/resources/
 build/dist/
 env/
