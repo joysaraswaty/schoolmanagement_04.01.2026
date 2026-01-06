@@ -1,5 +1,18 @@
 {
-  "name": "schoolmanagement-launchpad",
+  "name": "launchpad",
   "version": "1.0.0",
-  "private": true
+  "description": "launch pad for ui applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0"
+  },
+  "dependencies": {
+    "bestzip": "^2.1.7"
+  }
 }

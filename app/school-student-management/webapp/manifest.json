@@ -17,7 +17,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/service/schoolmanagement/",
+        "uri": "service/schoolmanagement/",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -152,6 +152,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "schoolmanagement.ui"
+    "service": "lcap.schoolmanagement"
   }
 }
