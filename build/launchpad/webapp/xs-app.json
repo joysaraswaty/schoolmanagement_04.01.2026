@@ -1,9 +1,10 @@
 {
+  "welcomeFile": "/launchpadPage.html",
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/service/(.*)$",
-      "target": "/service/$1",
+      "source": "^/service/schoolmanagement/(.*)$",
+      "target": "/service/schoolmanagement/$1",
       "destination": "schoolmanagement-srv-api",
       "authenticationType": "xsuaa"
     },

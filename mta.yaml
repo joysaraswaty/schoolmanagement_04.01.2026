@@ -36,24 +36,24 @@ modules:
     memory: 256M
 
 
-- name: schoolmanagement-app-deployer
-  type: com.sap.application.content
-  path: gen
-  requires:
-  - name: schoolmanagement-auth
-  - name: srv-api
-  - name: schoolmanagement-html5-repo-host
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-      content-target: true
-  build-parameters:
-    build-result: app/
-    requires:
-    - artifacts:
-      - school-student-management.zip
-      name: schoolmanagementschoolstudentmanagement
-      target-path: app/
+# - name: schoolmanagement-app-deployer
+#   type: com.sap.application.content
+#   path: gen
+#   requires:
+#   - name: schoolmanagement-auth
+#   - name: srv-api
+#   - name: schoolmanagement-html5-repo-host
+#     parameters:
+#       config:
+#         HTML5Runtime_enabled: true
+#       content-target: true
+#   build-parameters:
+#     build-result: app/
+#     requires:
+#     - artifacts:
+#       - school-student-management.zip
+#       name: schoolmanagementschoolstudentmanagement
+#       target-path: app/
 
 
 - name: schoolmanagementschoolstudentmanagement
@@ -90,32 +90,76 @@ modules:
         - Name: schoolmanagement-html5-repository
           ServiceInstanceName: schoolmanagement-html5-repo-host
           ServiceKeyName: schoolmanagement-html5-repo-host-key
-          # sap.cloud.service: schoolmanagement.service
+          sap.cloud.service: schoolmanagement.service
+
         - Authentication: OAuth2UserTokenExchange
           Name: schoolmanagement-auth
           ServiceInstanceName: schoolmanagement-auth
-          ServiceKeyName: schoolmanagement-auth-key
-          # sap.cloud.service: schoolmanagement.service
+          ServiceKeyName: schoolmanagement-auth-key          
+          sap.cloud.service: schoolmanagement.service
+
+        - Authentication: OAuth2UserTokenExchange
+          Name: schoolmanagement-srv-api
+          TokenServiceInstanceName: schoolmanagement-auth
+          TokenServiceKeyName: schoolmanagement-auth-key
+          URL: ~{srv-api/srv-url}
+          sap.cloud.service: schoolmanagement.service
+
+
         existing_destinations_policy: update
   build-parameters:
     no-source: true
 
 
 
-- name: launchpad
-  type: com.sap.application.content
-  path: launchpad
-  requires:
-  - name: portal_resources_schoolmanagement
-    parameters:
-      content-target: true
-      service-key:
-        config:
-          content-endpoint: developer
-        name: content-deploy-key
-  # - name: uaa_schoolmanagement
-  - name: schoolmanagement-auth
+# - name: launchpad
+#   type: com.sap.application.content
+#   path: launchpad
+#   requires:
+#   - name: portal_resources_schoolmanagement
+#     parameters:
+#       content-target: true
+#       service-key:
+#         config:
+#           content-endpoint: developer
+#         name: content-deploy-key
+#   # - name: uaa_schoolmanagement
+#   - name: schoolmanagement-auth
 
+
+- name: schoolmanagement-launchpad
+  type: html5
+  path: build/launchpad
+  build-parameters:
+    _artifactName: launchpad.zip
+    build-result: .
+    builder: custom
+    commands:
+      - npm install
+      - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+      - bash -c "cd dist && npx bestzip launchpad.zip *"
+      - rm -rf dist
+    supported-platforms: []
+
+
+- name: schoolmanagement-ui-deployer
+  type: com.sap.application.content
+  path: build/ui-deployer
+  requires:
+    - name: schoolmanagement-html5-repo-host
+      parameters:
+        content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+      - artifacts:
+          - school-student-management.zip
+        name: schoolmanagementschoolstudentmanagement
+        target-path: resources/
+      - artifacts:
+          - launchpad.zip
+        name: schoolmanagement-launchpad
+        target-path: resources/
 
 
 resources:

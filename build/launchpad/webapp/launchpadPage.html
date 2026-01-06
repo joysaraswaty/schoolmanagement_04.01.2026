@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Launchpad</title>
+
+  <script>
+    window["sap-ushell-config"] = {
+      defaultRenderer: "fiori2",
+      applications: {
+        "schoolmanagement-open": {
+          title: "School Management",
+          applicationType: "URL",
+          navigationMode: "newWindowThenEmbedded",
+          url: "../schoolmanagement.service.schoolstudentmanagement-0.0.1",
+          additionalInformation: "SAPUI5.Component=schoolstudentmanagement"
+        }
+      }
+    };
+  </script>
+
+  <script src="https://ui5.sap.com/1.129.2/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+
+  <script
+    src="https://ui5.sap.com/1.129.2/resources/sap-ui-core.js"
+    data-sap-ui-libs="sap.m, sap.ushell"
+    data-sap-ui-theme="sap_horizon">
+  </script>
+
+  <script>
+    sap.ui.getCore().attachInit(function () {
+      sap.ushell.Container.createRenderer("fiori2", true)
+        .then(r => r.placeAt("content"));
+    });
+  </script>
+</head>
+
+<body class="sapUiBody" id="content"></body>
+</html>
