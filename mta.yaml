@@ -153,6 +153,7 @@ modules:
       - name: schoolmanagement-html5-repo-host
         parameters:
           content-target: true
+      - name: schoolmanagement-html5-runtime   # 🔴 MISSING TODAY
     build-parameters:
       build-result: resources
       requires:
