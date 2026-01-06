@@ -4,7 +4,7 @@
     {
       "source": "^/service/(.*)$",
       "target": "/service/$1",
-      "destination": "schoolmanagement-srv-api",
+      "destination": "schoolmanagement-schoolmanagementSrv",
       "authenticationType": "xsuaa"
     },
     {
