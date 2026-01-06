@@ -9,7 +9,7 @@
     {
       "source": "^/service/schoolmanagement/(.*)$",
       "target": "/service/schoolmanagement/$1",
-      "destination": "schoolmanagement-schoolmanagementSrv",
+      "destination": "schoolmanagement-app-srv",
       "authenticationType": "xsuaa"
     },
     {

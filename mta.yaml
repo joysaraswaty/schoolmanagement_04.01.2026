@@ -6,6 +6,7 @@ parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
   subdomain: build-qa-udmt39c2
+
 build-parameters:
   before-all:
     - builder: custom
@@ -26,25 +27,35 @@ build-parameters:
     - builder: custom
       commands:
         - npm install
+
+        
 modules:
   - name: schoolmanagement-schoolstudentmanagement
     type: html5
     path: app/school-student-management
     build-parameters:
       builder: custom
+      # commands:
+      #   - rm -rf dist-zip dist
+      #   - npm install
+      #   - >-
+      #     npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+      #     --include-task=generateCachebusterInfo
+      #   - mkdir dist-zip
+      #   - >-
+      #     bash -c "cd dist && npx bestzip
+      #     ../dist-zip/schoolstudentmanagement.zip *"
       commands:
-        - rm -rf dist-zip dist
+        - rm -rf dist
         - npm install
-        - >-
-          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
-          --include-task=generateCachebusterInfo
-        - mkdir dist-zip
-        - >-
-          bash -c "cd dist && npx bestzip
-          ../dist-zip/schoolstudentmanagement.zip *"
-      _artifactName: schoolstudentmanagement.zip
+        - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+      # _artifactName: schoolstudentmanagement.zip
       supported-platforms: []
-      build-result: dist-zip
+      # build-result: dist-zip
+      build-result: dist
+
+
+
   - name: schoolmanagement-db-deployer
     type: hdb
     path: gen/db
@@ -58,6 +69,8 @@ modules:
     requires:
       - name: schoolmanagement-service-uaa
       - name: schoolmanagement-service-db
+
+
   - name: schoolmanagement-srv
     type: nodejs
     path: gen/srv
@@ -79,6 +92,8 @@ modules:
       - name: schoolmanagement-service-metadata
       - name: schoolmanagement-service-connectivity
       - name: schoolmanagement-service-logs
+
+
   - name: schoolmanagement-aux-destinations
     type: com.sap.application.content
     parameters:
@@ -91,16 +106,19 @@ modules:
               ServiceInstanceName: schoolmanagement-uaa
               ServiceKeyName: schoolmanagement-uaa-key
               sap.cloud.service: lcap.schoolmanagement
+
             - Authentication: OAuth2UserTokenExchange
               Name: schoolmanagement-app-srv
               TokenServiceInstanceName: schoolmanagement-uaa
               TokenServiceKeyName: schoolmanagement-uaa-key
               URL: ~{srv-api/srv-url}
               sap.cloud.service: lcap.schoolmanagement
+
             - Name: schoolmanagement-service-html5-apps-repo-host
               ServiceInstanceName: schoolmanagement-html5-apps-repo-host
               ServiceKeyName: schoolmanagement-html5-apps-repo-host-key
               sap.cloud.service: lcap.schoolmanagement
+
             - Authentication: OAuth2UserTokenExchange
               Name: schoolmanagement-schoolmanagementSrv
               TokenServiceInstanceName: schoolmanagement-uaa
@@ -129,6 +147,8 @@ modules:
       - name: schoolmanagement-service-destination
         parameters:
           content-target: true
+
+
   - name: schoolmanagement-launchpad
     type: html5
     path: build/launchpad
@@ -144,6 +164,8 @@ modules:
       _artifactName: launchpad.zip
       supported-platforms: []
       build-result: ../../build/dist
+
+
   - name: schoolmanagement-aux-ui-deployer
     type: com.sap.application.content
     path: build/ui-deployer
@@ -162,7 +184,11 @@ modules:
       - name: schoolmanagement-service-html5-apps-repo-host
         parameters:
           content-target: true
+
+
+
 resources:
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-uaa
     parameters:
@@ -180,6 +206,8 @@ resources:
             - x509
         xsappname: schoolmanagement-${space}
         role-collections: []
+
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-db
     parameters:
@@ -195,6 +223,8 @@ resources:
       config:
         HTML5Runtime_enabled: true
         version: 1.0.0
+
+
   - type: org.cloudfoundry.user-provided-service
     name: schoolmanagement-service-metadata
     parameters:
@@ -203,18 +233,24 @@ resources:
       service-name: schoolmanagement-metadata
       config:
         default-domain: ${default-domain}
+
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-connectivity
     parameters:
       service: connectivity
       service-plan: lite
       service-name: schoolmanagement-connectivity
+
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-logs
     parameters:
       service: application-logs
       service-plan: lite
       service-name: schoolmanagement-logs
+
+      
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-html5-apps-repo-host
     parameters:
