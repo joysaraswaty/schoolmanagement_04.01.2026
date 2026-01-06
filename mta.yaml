@@ -4,251 +4,247 @@ description: A simple CAP project.
 version: 1.0.0
 modules:
 
-- name: schoolmanagement-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: schoolmanagement-auth
-  - name: schoolmanagement-db
-  - name: schoolmanagement-destination
-  - name: schoolmanagement-metadata
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    disk-quota: 512M
-    instances: 1
-    memory: 512M
-  build-parameters:
-    builder: npm-ci
-
-
-- name: schoolmanagement-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: schoolmanagement-db
-  parameters:
-    buildpack: nodejs_buildpack
-    disk-quota: 256M
-    memory: 256M
-
-
-# - name: schoolmanagement-app-deployer
-#   type: com.sap.application.content
-#   path: gen
-#   requires:
-#   - name: schoolmanagement-auth
-#   - name: srv-api
-#   - name: schoolmanagement-html5-repo-host
-#     parameters:
-#       config:
-#         HTML5Runtime_enabled: true
-#       content-target: true
-#   build-parameters:
-#     build-result: app/
-#     requires:
-#     - artifacts:
-#       - school-student-management.zip
-#       name: schoolmanagementschoolstudentmanagement
-#       target-path: app/
-
-
-- name: schoolmanagementschoolstudentmanagement
-  type: html5
-  path: app/school-student-management
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm ci
-    - npm run build
-    supported-platforms: []
-
-
-- name: schoolmanagement-destinations
-  type: com.sap.application.content
-  requires:
-  - name: schoolmanagement-auth
-    parameters:
-      service-key:
-        name: schoolmanagement-auth-key       
-  - name: schoolmanagement-html5-repo-host
-    parameters:
-      service-key:
-        name: schoolmanagement-html5-repo-host-key
-  - name: srv-api
-  - name: schoolmanagement-destination
-    parameters:
-      content-target: true
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: schoolmanagement-html5-repository
-          ServiceInstanceName: schoolmanagement-html5-repo-host
-          ServiceKeyName: schoolmanagement-html5-repo-host-key
-          sap.cloud.service: schoolmanagement.service
-
-        - Authentication: OAuth2UserTokenExchange
-          Name: schoolmanagement-auth
-          ServiceInstanceName: schoolmanagement-auth
-          ServiceKeyName: schoolmanagement-auth-key          
-          sap.cloud.service: schoolmanagement.service
-
-        - Authentication: OAuth2UserTokenExchange
-          Name: schoolmanagement-srv-api
-          TokenServiceInstanceName: schoolmanagement-auth
-          TokenServiceKeyName: schoolmanagement-auth-key
-          URL: ~{srv-api/srv-url}
-          sap.cloud.service: schoolmanagement.service
-
-
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-
-
-
-# - name: launchpad
-#   type: com.sap.application.content
-#   path: launchpad
-#   requires:
-#   - name: portal_resources_schoolmanagement
-#     parameters:
-#       content-target: true
-#       service-key:
-#         config:
-#           content-endpoint: developer
-#         name: content-deploy-key
-#   # - name: uaa_schoolmanagement
-#   - name: schoolmanagement-auth
-
-
-- name: schoolmanagement-launchpad
-  type: html5
-  path: build/launchpad
-  build-parameters:
-    _artifactName: launchpad.zip
-    build-result: .
-    builder: custom
-    commands:
-      - npm install
-      - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
-      - bash -c "cd dist && npx bestzip launchpad.zip *"
-      - rm -rf dist
-    supported-platforms: []
-
-
-- name: schoolmanagement-ui-deployer
-  type: com.sap.application.content
-  path: build/ui-deployer
-  requires:
-    - name: schoolmanagement-html5-repo-host
-      parameters:
-        content-target: true
-  build-parameters:
-    build-result: resources
+  - name: schoolmanagement-srv
+    type: nodejs
+    path: gen/srv
     requires:
-      - artifacts:
-          - school-student-management.zip
-        name: schoolmanagementschoolstudentmanagement
-        target-path: resources/
-      - artifacts:
-          - launchpad.zip
-        name: schoolmanagement-launchpad
-        target-path: resources/
+      - name: schoolmanagement-auth
+      - name: schoolmanagement-db
+      # - name: schoolmanagement-destination
+      - name: schoolmanagement-metadata
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      disk-quota: 512M
+      instances: 1
+      memory: 512M
+    build-parameters:
+      builder: npm-ci
+
+  - name: schoolmanagement-db-deployer
+    type: hdb
+    path: gen/db
+    requires:
+      - name: schoolmanagement-db
+    parameters:
+      buildpack: nodejs_buildpack
+      disk-quota: 256M
+      memory: 256M
+
+  # - name: schoolmanagement-app-deployer
+  #   type: com.sap.application.content
+  #   path: gen
+  #   requires:
+  #   - name: schoolmanagement-auth
+  #   - name: srv-api
+  #   - name: schoolmanagement-html5-repo-host
+  #     parameters:
+  #       config:
+  #         HTML5Runtime_enabled: true
+  #       content-target: true
+  #   build-parameters:
+  #     build-result: app/
+  #     requires:
+  #     - artifacts:
+  #       - school-student-management.zip
+  #       name: schoolmanagementschoolstudentmanagement
+  #       target-path: app/
 
 
-resources:
+  - name: schoolmanagementschoolstudentmanagement
+    type: html5
+    path: app/school-student-management
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
 
-- name: schoolmanagement-metadata
-  type: org.cloudfoundry.user-provided-service
-  parameters:
-    service: metadata
-    config:
-      default-domain: ${default-domain}
-
-
-
-- name: schoolmanagement-auth
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      oauth2-configuration:
-        redirect-uris:
-        # - https://*~{app-api/app-uri}/**
-        - https://*.${default-domain}/**
-      tenant-mode: dedicated
-      xsappname: schoolmanagement-${org}-${space}
-    path: ./xs-security.json
-    service: xsuaa
-    service-plan: application
-  # requires:
-  # - name: app-api
-
-
-- name: schoolmanagement-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-
-
-- name: schoolmanagement-destination
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: destination
-    service-plan: lite
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
+  - name: schoolmanagement-destinations
+    type: com.sap.application.content
+    requires:
+      - name: schoolmanagement-auth
+        parameters:
+          service-key:
+            name: schoolmanagement-auth-key
+      - name: schoolmanagement-html5-repo-host
+        parameters:
+          service-key:
+            name: schoolmanagement-html5-repo-host-key
+      - name: srv-api
+        # - name: schoolmanagement-destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        # instance:
+        subaccount:
           destinations:
+            - Name: schoolmanagement-html5-repository
+              ServiceInstanceName: schoolmanagement-html5-repo-host
+              ServiceKeyName: schoolmanagement-html5-repo-host-key
+              sap.cloud.service: schoolmanagement.ui
+
+            # - Authentication: OAuth2UserTokenExchange
+            #   Name: schoolmanagement-auth
+            #   ServiceInstanceName: schoolmanagement-auth
+            #   ServiceKeyName: schoolmanagement-auth-key          
+            #   sap.cloud.service: schoolmanagement.ui
+
+            # - Authentication: OAuth2UserTokenExchange
+            #   Name: schoolmanagement-srv-api
+            #   TokenServiceInstanceName: schoolmanagement-auth
+            #   TokenServiceKeyName: schoolmanagement-auth-key
+            #   URL: ~{srv-api/srv-url}
+            #   sap.cloud.service: schoolmanagement.ui
+
             - Name: schoolmanagement-srv-api
               Authentication: OAuth2UserTokenExchange
               HTML5.DynamicDestination: true
-              HTML5.ForwardAuthToken: true      
-              ProxyType: Internet
-              Type: HTTP
-              URL: ~{srv-api/srv-url}
-              sap.cloud.service: schoolmanagement.service
-          existing_destinations_policy: update    
-  requires:
-  # - name: app-api
-  - name: srv-api          # ✅ MUST MATCH URL reference
+              TokenServiceInstanceName: schoolmanagement-auth
+              TokenServiceKeyName: schoolmanagement-auth-key
+              URL: ~{srv-api/srv-url}/service/schoolmanagement
+              sap.cloud.service: schoolmanagement.ui
+
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+
+  # - name: launchpad
+  #   type: com.sap.application.content
+  #   path: launchpad
+  #   requires:
+  #   - name: portal_resources_schoolmanagement
+  #     parameters:
+  #       content-target: true
+  #       service-key:
+  #         config:
+  #           content-endpoint: developer
+  #         name: content-deploy-key
+  #   # - name: uaa_schoolmanagement
+  #   - name: schoolmanagement-auth
 
 
-- name: schoolmanagement-html5-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-host
-- name: schoolmanagement-html5-runtime
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-plan: app-runtime
+  - name: schoolmanagement-launchpad
+    type: html5
+    path: build/launchpad
+    build-parameters:
+      _artifactName: launchpad.zip
+      build-result: .
+      builder: custom
+      commands:
+        - npm install
+        - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+        - bash -c "cd dist && npx bestzip launchpad.zip *"
+        - rm -rf dist
+      supported-platforms:
+        []
+
+  - name: schoolmanagement-ui-deployer
+    type: com.sap.application.content
+    path: build/ui-deployer
+    requires:
+      - name: schoolmanagement-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - school-student-management.zip
+          name: schoolmanagementschoolstudentmanagement
+          target-path: resources/
+        - artifacts:
+            - launchpad.zip
+          name: schoolmanagement-launchpad
+          target-path: resources/
+
+resources:
+
+  - name: schoolmanagement-metadata
+    type: org.cloudfoundry.user-provided-service
+    parameters:
+      service: metadata
+      config:
+        default-domain: ${default-domain}
+
+  - name: schoolmanagement-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        oauth2-configuration:
+          redirect-uris:
+            # - https://*~{app-api/app-uri}/**
+            - https://*.${default-domain}/**
+        tenant-mode: dedicated
+        xsappname: schoolmanagement-${org}-${space}
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+    # requires:
+    # - name: app-api
 
 
-- name: portal_resources_schoolmanagement
-  # type: org.cloudfoundry.managed-service
-  type: org.cloudfoundry.existing-service
-  parameters:
-    # service: portal
-    # service-plan: standard
-    service-name: QA-Workzone
+  - name: schoolmanagement-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      # - name: schoolmanagement-destination
+      #   type: org.cloudfoundry.managed-service
+      #   parameters:
+      #     service: destination
+      #     service-plan: lite
+      #     config:
+      #       HTML5Runtime_enabled: true
+      #       init_data:
+      #         instance:
+      #           destinations:
+      # - Name: schoolmanagement-srv-api
+      #   Authentication: OAuth2UserTokenExchange
+      #   HTML5.DynamicDestination: true
+      #   HTML5.ForwardAuthToken: true      
+      #   ProxyType: Internet
+      #   Type: HTTP
+      #   URL: ~{srv-api/srv-url}
+      #           #   sap.cloud.service: schoolmanagement.ui
+      #         existing_destinations_policy: update    
+      # requires:
+      # # - name: app-api
+      # - name: srv-api          # ✅ MUST MATCH URL reference
 
 
-    
+  - name: schoolmanagement-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: schoolmanagement-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  - name: portal_resources_schoolmanagement
+    # type: org.cloudfoundry.managed-service
+    type: org.cloudfoundry.existing-service
+    parameters:
+      # service: portal
+      # service-plan: standard
+      service-name: QA-Workzone
+
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production

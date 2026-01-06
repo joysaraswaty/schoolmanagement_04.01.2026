@@ -22,6 +22,6 @@
   },
   "sap.cloud": {
     "public": true,
-    "service": "schoolmanagement.service"
+    "service": "schoolmanagement.ui"
   }
 }
