@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ListReport"],function(t){"use strict";var e={actions:{},assertions:{}};return new t({appId:"schoolstudentmanagement",componentId:"SchoolList",contextPath:"/School"},e)});
+//# sourceMappingURL=SchoolList.js.map
