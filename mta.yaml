@@ -56,10 +56,7 @@ modules:
         # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
         # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
         # - npx ui5 build --all --dest dist
-        - npx -p @ui5/cli@^3.0.0 ui5 build \
-          --dest dist \
-          --include-task=generateComponentPreload \
-          --include-task=generateCachebusterInfo
+        - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateComponentPreload --include-task=generateCachebusterInfo
         - mkdir dist-zip
         - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"
         # - bash -c "mkdir -p dist-zip && cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"
