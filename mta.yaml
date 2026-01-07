@@ -159,7 +159,7 @@ modules:
 
   - name: schoolmanagement-launchpad
     type: html5
-    path: app/launchpad
+    path: build/launchpad
     build-parameters:
       builder: custom
       commands:
@@ -178,8 +178,8 @@ modules:
 
   - name: schoolmanagement-aux-ui-deployer
     type: com.sap.application.content
-    # path: build/ui-deployer
-    path: .
+    path: build/ui-deployer
+    # path: .
 
     build-parameters:
       build-result: resources
