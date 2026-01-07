@@ -53,7 +53,9 @@ modules:
       commands:
         - rm -rf dist
         - npm install
-        - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+        - npx ui5 build --all --dest dist
         - mkdir dist-zip
         - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"
         # - bash -c "mkdir -p dist-zip && cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"
