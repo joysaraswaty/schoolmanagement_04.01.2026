@@ -17,12 +17,16 @@ build-parameters:
         - mkdir -p build/ui-deployer
     - builder: custom
       commands:
-        - npm install --production
-        - >-
-          bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
-          @sap/cds-dk"
-        - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        # - npm install --production
+        # - >-
+        #   bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+        #   @sap/cds-dk"
+        # - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        # - cds build --production
+        - npm install --no-save @sap/cds-dk
+        - export PATH=$PATH:$(pwd)/node_modules/.bin
         - cds build --production
+
   after-all:
     - builder: custom
       commands:
@@ -250,7 +254,7 @@ resources:
       service-plan: lite
       service-name: schoolmanagement-logs
 
-      
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-html5-apps-repo-host
     parameters:
