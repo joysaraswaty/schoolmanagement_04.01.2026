@@ -1,2 +1,0 @@
-sap.ui.define(["sap/fe/test/ObjectPage"],function(e){"use strict";var t={actions:{},assertions:{}};return new e({appId:"schoolstudentmanagement",componentId:"SchoolObjectPage",contextPath:"/School"},t)});
-//# sourceMappingURL=SchoolObjectPage.js.map
