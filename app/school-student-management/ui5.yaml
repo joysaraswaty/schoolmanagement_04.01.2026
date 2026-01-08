@@ -4,6 +4,13 @@ specVersion: "4.0"
 metadata:
   name: schoolstudentmanagement
 type: application
+
+builder:
+  resources:
+    configuration:
+      paths:
+        webapp: .
+
 server:
   customMiddleware:
     - name: fiori-tools-proxy
