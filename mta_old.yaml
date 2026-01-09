@@ -1,7 +1,7 @@
 _schema-version: '3.1'
 ID: schoolmanagement
 version: 1.0.0
-description: School Management CAP + UI5 + Launchpad
+description: A simple CAP project.
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -17,31 +17,61 @@ build-parameters:
         - mkdir -p build/ui-deployer
     - builder: custom
       commands:
+        # - npm install --production
+        # - >-
+        #   bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+        #   @sap/cds-dk"
+        # - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        # - cds build --production
         - npm install --no-save @sap/cds-dk
+        # - export PATH=$PATH:$(pwd)/node_modules/.bin
+        # - cds build --production
         - npx cds build --production
 
-modules:
+  # after-all:
+  #   - builder: custom
+  #     commands:
+  #       - npm install
 
-  # ---------------------------------------------------------
-  # UI5 APP: school-student-management
-  # ---------------------------------------------------------
+        
+modules:
   - name: schoolmanagement-schoolstudentmanagement
     type: html5
     path: app/school-student-management
     build-parameters:
       builder: custom
+      # commands:
+      #   - rm -rf dist-zip dist
+      #   - npm install
+      #   - >-
+      #     npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+      #     --include-task=generateCachebusterInfo
+      #   - mkdir dist-zip
+      #   - >-
+      #     bash -c "cd dist && npx bestzip
+      #     ../dist-zip/schoolstudentmanagement.zip *"
       commands:
         - rm -rf dist
         - npm install
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+        # - npx ui5 build --all --dest dist
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateComponentPreload --include-task=generateCachebusterInfo
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --clean-dest
         - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
-        - mkdir -p dist-zip
-        - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
+        # - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --clean-dest --config ui5.yaml
+        - mkdir p dist-zip
+        # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"     
+        # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ." 
+        - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip schoolstudentmanagement"
+        # - bash -c "mkdir -p dist-zip && cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip *"
+      # _artifactName: schoolstudentmanagement.zip
       supported-platforms: []
       build-result: dist-zip
+      # build-result: dist
 
-  # ---------------------------------------------------------
-  # DB DEPLOYER
-  # ---------------------------------------------------------
+
+
   - name: schoolmanagement-db-deployer
     type: hdb
     path: gen/db
@@ -56,9 +86,7 @@ modules:
       - name: schoolmanagement-service-uaa
       - name: schoolmanagement-service-db
 
-  # ---------------------------------------------------------
-  # CAP SERVICE
-  # ---------------------------------------------------------
+
   - name: schoolmanagement-srv
     type: nodejs
     path: gen/srv
@@ -81,9 +109,7 @@ modules:
       - name: schoolmanagement-service-connectivity
       - name: schoolmanagement-service-logs
 
-  # ---------------------------------------------------------
-  # DESTINATIONS (including /service/schoolmanagement)
-  # ---------------------------------------------------------
+
   - name: schoolmanagement-aux-destinations
     type: com.sap.application.content
     parameters:
@@ -91,15 +117,12 @@ modules:
         subaccount:
           existing_destinations_policy: update
           destinations:
-
-            # XSUAA
             - Authentication: OAuth2UserTokenExchange
               Name: schoolmanagement-service-uaa
               ServiceInstanceName: schoolmanagement-uaa
               ServiceKeyName: schoolmanagement-uaa-key
               sap.cloud.service: lcap.schoolmanagement
 
-            # CAP root service
             - Authentication: OAuth2UserTokenExchange
               Name: schoolmanagement-app-srv
               TokenServiceInstanceName: schoolmanagement-uaa
@@ -107,20 +130,24 @@ modules:
               URL: ~{srv-api/srv-url}
               sap.cloud.service: lcap.schoolmanagement
 
-            # REQUIRED: UI5 app calls /service/schoolmanagement
-            - Authentication: OAuth2UserTokenExchange
-              Name: schoolmanagement-schoolmanagementSrv
-              TokenServiceInstanceName: schoolmanagement-uaa
-              TokenServiceKeyName: schoolmanagement-uaa-key
-              URL: ~{srv-api/srv-url}/service/schoolmanagement
-              sap.cloud.service: lcap.schoolmanagement
-
-            # HTML5 repo host
             - Name: schoolmanagement-service-html5-apps-repo-host
               ServiceInstanceName: schoolmanagement-html5-apps-repo-host
               ServiceKeyName: schoolmanagement-html5-apps-repo-host-key
               sap.cloud.service: lcap.schoolmanagement
 
+            # - Authentication: OAuth2UserTokenExchange
+            #   Name: schoolmanagement-schoolmanagementSrv
+            #   TokenServiceInstanceName: schoolmanagement-uaa
+            #   TokenServiceKeyName: schoolmanagement-uaa-key
+            #   URL: ~{srv-api/srv-url}/service/schoolmanagement
+            #   sap.cloud.service: lcap.schoolmanagement
+            #   sap.applicationdevelopment.actions.enabled: false
+            #   sap.build.usage: CAP
+            #   sap.processautomation.enabled: false
+            #   HTML5.DynamicDestination: false
+            #   WebIDEEnabled: false
+            #   MobileEnabled: false
+            #   AppgyverEnabled: false
     build-parameters:
       no-source: true
     requires:
@@ -137,9 +164,7 @@ modules:
         parameters:
           content-target: true
 
-  # ---------------------------------------------------------
-  # LAUNCHPAD MODULE
-  # ---------------------------------------------------------
+
   - name: schoolmanagement-launchpad
     type: html5
     path: build/launchpad
@@ -147,38 +172,54 @@ modules:
       builder: custom
       commands:
         - npm install
-        - npx ui5 build --dest dist --include-task=generateCachebusterInfo
-        - mkdir -p dist-zip
-        - bash -c "cd dist && npx bestzip ../dist-zip/launchpad.zip ."
+        - npx -p @ui5/cli@^3.0.0 ui5 build --dest dist --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/launchpad.zip *"
+        # - bash -c "cd dist && npx bestzip ../../../build/dist/launchpad.zip *"
+        # - rm -rf dist
+      # _artifactName: launchpad.zip
       supported-platforms: []
+      # build-result: ../../build/dist
+      # build-result: dist
       build-result: dist-zip
 
-  # ---------------------------------------------------------
-  # UI DEPLOYER (deploys UI5 + Launchpad to HTML5 repo)
-  # ---------------------------------------------------------
+
   - name: schoolmanagement-aux-ui-deployer
     type: com.sap.application.content
     path: build/ui-deployer
+    # path: .
+
     build-parameters:
       build-result: resources
       requires:
+        # - name: schoolmanagement-service-html5-apps-repo-host
+        #   parameters:
+        #     content-target: true
+
         - name: schoolmanagement-schoolstudentmanagement
           artifacts:
             - schoolstudentmanagement.zip
           target-path: resources
+
         - name: schoolmanagement-launchpad
           artifacts:
             - launchpad.zip
           target-path: resources
+
     requires:
+
       - name: schoolmanagement-service-html5-apps-repo-host
         parameters:
           content-target: true
-      - name: schoolmanagement-service-html5-apps-repo-runtime
+
+      # - name: schoolmanagement-service-html5-apps-repo-runtime
+
+ 
+
+
 
 resources:
 
-  # XSUAA
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-uaa
     parameters:
@@ -197,15 +238,13 @@ resources:
         xsappname: schoolmanagement-${space}
         role-collections: []
 
-  # HANA
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-db
     parameters:
       service: hana
       service-plan: hdi-shared
       service-name: schoolmanagement-db
-
-  # DESTINATION
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-destination
     parameters:
@@ -216,7 +255,7 @@ resources:
         HTML5Runtime_enabled: true
         version: 1.0.0
 
-  # METADATA
+
   - type: org.cloudfoundry.user-provided-service
     name: schoolmanagement-service-metadata
     parameters:
@@ -226,7 +265,7 @@ resources:
       config:
         default-domain: ${default-domain}
 
-  # CONNECTIVITY
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-connectivity
     parameters:
@@ -234,7 +273,7 @@ resources:
       service-plan: lite
       service-name: schoolmanagement-connectivity
 
-  # LOGS
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-logs
     parameters:
@@ -242,7 +281,7 @@ resources:
       service-plan: lite
       service-name: schoolmanagement-logs
 
-  # HTML5 REPO HOST
+
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-html5-apps-repo-host
     parameters:
@@ -250,7 +289,6 @@ resources:
       service-plan: app-host
       service-name: schoolmanagement-html5-apps-repo-host
 
-  # HTML5 REPO RUNTIME (REQUIRED!)
   - type: org.cloudfoundry.managed-service
     name: schoolmanagement-service-html5-apps-repo-runtime
     parameters:
