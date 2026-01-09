@@ -34,8 +34,11 @@ modules:
         - rm -rf dist
         - npm install
         - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
-        - mkdir -p dist-zip
-        - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
+        # - mkdir -p dist-zip
+        - mkdir -p dist-zip/schoolstudentmanagement
+        - cp -r dist/* dist-zip/schoolstudentmanagement/
+        - cd dist-zip && zip -r schoolstudentmanagement.zip schoolstudentmanagement
+        # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
       supported-platforms: []
       build-result: dist-zip
       _artifactName: schoolstudentmanagement.zip
