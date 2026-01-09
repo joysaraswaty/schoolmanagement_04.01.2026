@@ -38,6 +38,7 @@ modules:
         - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
       supported-platforms: []
       build-result: dist-zip
+      _artifactName: schoolstudentmanagement.zip
 
   # ---------------------------------------------------------
   # DB DEPLOYER
