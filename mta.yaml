@@ -31,6 +31,11 @@ modules:
     build-parameters:
       builder: custom
       commands:
+        - rm -rf schoolstudentmanagement schoolstudentmanagement.zip dist-zip
+        - npm install
+        - npx ui5 build --dest schoolstudentmanagement --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
+        - mkdir -p dist-zip
+        - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
         # - rm -rf dist dist-zip
         # - npm install
         # - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
@@ -60,13 +65,10 @@ modules:
 
         # zip the app folder (NO cd)
         # - npx bestzip dist-zip/schoolstudentmanagement.zip dist-zip/schoolstudentmanagement
-        - rm -rf schoolstudentmanagement schoolstudentmanagement.zip
-        - npm install
-        - npx ui5 build --dest schoolstudentmanagement --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
-        - mkdir dist-zip
+        
         # - cp -R dist/. schoolstudentmanagement/
         # - npx bestzip schoolstudentmanagement.zip schoolstudentmanagement
-        - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
+        
 
 
       supported-platforms: []
