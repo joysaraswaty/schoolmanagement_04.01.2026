@@ -35,7 +35,9 @@ modules:
         - npm install
         - npx ui5 build --dest schoolstudentmanagement --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
         - mkdir -p dist-zip
-        - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
+        # - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
+        - bash -c "cd schoolstudentmanagement && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
+        
         # - rm -rf dist dist-zip
         # - npm install
         # - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
