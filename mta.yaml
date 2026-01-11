@@ -31,12 +31,20 @@ modules:
     build-parameters:
       builder: custom
       commands:
-        - rm -rf dist dist-zip
-        - npm install
-        - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
+        # - rm -rf dist dist-zip
+        # - npm install
+        # - npx ui5 build --dest dist --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
+        # - bash -c "mkdir -p dist-zip/schoolstudentmanagement && cp -r dist/. dist-zip/schoolstudentmanagement/ && cd dist-zip && npx bestzip schoolstudentmanagement.zip schoolstudentmanagement"
+        # - bash -c "mkdir -p dist-zip/schoolstudentmanagement && cp -r dist/. dist-zip/schoolstudentmanagement/ && cd dist-zip && zip -r schoolstudentmanagement.zip schoolstudentmanagement"
+        # - bash -c "mkdir -p dist-zip/schoolstudentmanagement && cp -R dist/. dist-zip/schoolstudentmanagement/ && cd dist-zip && npx bestzip schoolstudentmanagement.zip schoolstudentmanagement"
+        # - bash -c "mkdir -p dist-zip/schoolstudentmanagement && cp -R dist/. dist-zip/schoolstudentmanagement/ && npx bestzip dist-zip/schoolstudentmanagement.zip dist-zip/schoolstudentmanagement/**"
+        # - bash -c "mkdir -p dist-zip/schoolstudentmanagement && cp -R dist/. dist-zip/schoolstudentmanagement/ && npx bestzip dist-zip/schoolstudentmanagement.zip dist-zip/schoolstudentmanagement"
         # - mkdir -p dist-zip
         # - mkdir -p dist-zip/schoolstudentmanagement #Working for local mta
-        - mkdir dist-zip
+
+        # - cp -r dist/. dist-zip/schoolstudentmanagement/
+
+        # - mkdir dist-zip
         # - cp -r dist/* dist-zip/schoolstudentmanagement/
         # - cp -r dist/. dist-zip/schoolstudentmanagement/ #Working for local mta
         # - cd dist-zip && zip -r schoolstudentmanagement.zip schoolstudentmanagement
@@ -45,7 +53,21 @@ modules:
         # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
         # - bash -c "cd dist-zip && npx bestzip schoolstudentmanagement.zip schoolstudentmanagement"
         # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
-        - npx bestzip dist-zip/schoolstudentmanagement.zip dist
+        # - npx bestzip dist-zip/schoolstudentmanagement.zip dist
+          
+        # - bash -c "cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
+        # - bash -c "mkdir -p dist-zip && cd dist && npx bestzip ../dist-zip/schoolstudentmanagement.zip ."
+
+        # zip the app folder (NO cd)
+        # - npx bestzip dist-zip/schoolstudentmanagement.zip dist-zip/schoolstudentmanagement
+        - rm -rf schoolstudentmanagement schoolstudentmanagement.zip
+        - npm install
+        - npx ui5 build --dest schoolstudentmanagement --clean-dest --include-task=generateComponentPreload --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        # - cp -R dist/. schoolstudentmanagement/
+        # - npx bestzip schoolstudentmanagement.zip schoolstudentmanagement
+        - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
+
       supported-platforms: []
       build-result: dist-zip
       _artifactName: schoolstudentmanagement.zip
