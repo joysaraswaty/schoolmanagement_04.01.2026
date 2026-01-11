@@ -68,6 +68,7 @@ modules:
         # - npx bestzip schoolstudentmanagement.zip schoolstudentmanagement
         - npx bestzip dist-zip/schoolstudentmanagement.zip schoolstudentmanagement
 
+
       supported-platforms: []
       build-result: dist-zip
       _artifactName: schoolstudentmanagement.zip
